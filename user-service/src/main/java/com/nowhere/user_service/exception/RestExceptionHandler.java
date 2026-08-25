@@ -1,6 +1,8 @@
 package com.nowhere.user_service.exception;
 
 import com.nowhere.user_service.dto.ErrorDto;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -9,7 +11,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
-public class CustomExceptionHandler {
+public class RestExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorDto> handleUserNotFound(UserNotFoundException ex){
@@ -18,7 +20,24 @@ public class CustomExceptionHandler {
                 HttpStatus.NOT_FOUND
         );
     }
-    @ExceptionHandler(SQLException.class)
+    @ExceptionHandler(
+            {
+                    DataIntegrityViolationException.class
+            }
+        )
+    public ResponseEntity<ErrorDto> handleBadRequest(){
+        return  new ResponseEntity<>(
+                new ErrorDto(HttpStatus.BAD_REQUEST.value(),"bad request", LocalDateTime.now()),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(
+            {
+                    SQLException.class,
+                    InvalidDataAccessResourceUsageException.class
+            }
+        )
     public ResponseEntity<ErrorDto> handleSqlError(SQLException ex){
         return  new ResponseEntity<>(
                 new ErrorDto(HttpStatus.SERVICE_UNAVAILABLE.value(),"internal services are down try again", LocalDateTime.now()),
