@@ -1,0 +1,21 @@
+# IDE
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# Agent tooling (local only)
+.agav/
+
+# Build output
+target/
+bin/
+*.class
+
+# Logs & OS files
+*.log
+.DS_Store
+Thumbs.db
+docs/
