@@ -22,10 +22,10 @@ public class DeviceService {
     }
     public DeviceDto createDevice(DeviceDto input) {
         Device device = new Device();
-        device.setName(input.getName());
-        device.setType(input.getType());
-        device.setLocation(input.getLocation());
-        device.setUserId(input.getUserId());
+        device.setName(input.name());
+        device.setType(input.type());
+        device.setLocation(input.location());
+        device.setUserId(input.userId());
 
         final Device savedDevice = deviceRepository.save(device);
         return mapToDto(savedDevice);
@@ -36,10 +36,10 @@ public class DeviceService {
                 .orElseThrow(() ->
                         new DeviceNotFoundException("Device not found with id " + id));
 
-        existing.setName(input.getName());
-        existing.setType(input.getType());
-        existing.setLocation(input.getLocation());
-        existing.setUserId(input.getUserId());
+        existing.setName(input.name());
+        existing.setType(input.type());
+        existing.setLocation(input.location());
+        existing.setUserId(input.userId());
 
         final Device updatedDevice = deviceRepository.save(existing);
         return mapToDto(updatedDevice);

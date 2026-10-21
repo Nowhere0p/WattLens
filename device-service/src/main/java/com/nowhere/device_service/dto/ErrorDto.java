@@ -1,19 +1,12 @@
 package com.nowhere.device_service.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class ErrorDto {
-
-    private int status;
-    private String message;
-    private LocalDateTime timestamp;
-}
+@Builder
+public record ErrorDto (
+     int status,
+     String message,
+     LocalDateTime timestamp
+){}

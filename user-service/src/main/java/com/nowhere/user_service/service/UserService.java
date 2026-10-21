@@ -18,12 +18,12 @@ public class UserService {
     public UserDto createUser(UserDto userDto){
         log.info("creating user {}",userDto);
         final User createdUser = User.builder()
-                .firstName(userDto.getFirstName())
-                .lastName(userDto.getLastName())
-                .email(userDto.getEmail())
-                .address(userDto.getAddress())
-                .alerting(userDto.isAlerting())
-                .energyAlertingThreshold(userDto.getEnergyAlertingThreshold())
+                .firstName(userDto.firstName())
+                .lastName(userDto.lastName())
+                .email(userDto.email())
+                .address(userDto.address())
+                .alerting(Boolean.TRUE.equals(userDto.alerting()))
+                .energyAlertingThreshold(userDto.energyAlertingThreshold() == null ? 0.0 : userDto.energyAlertingThreshold())
                 .build();
         final User saved = userRepository.save(createdUser);
         return  toDto(saved);
@@ -38,12 +38,12 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("user not found"));
 
-        user.setFirstName(dto.getFirstName());
-        user.setLastName(dto.getLastName());
-        user.setEmail(dto.getEmail());
-        user.setAddress(dto.getAddress());
-        user.setAlerting(dto.isAlerting());
-        user.setEnergyAlertingThreshold(dto.getEnergyAlertingThreshold());
+        user.setFirstName(dto.firstName());
+        user.setLastName(dto.lastName());
+        user.setEmail(dto.email());
+        user.setAddress(dto.address());
+        user.setAlerting(Boolean.TRUE.equals(dto.alerting()));
+        user.setEnergyAlertingThreshold(dto.energyAlertingThreshold() == null ? 0.0 : dto.energyAlertingThreshold());
 
         userRepository.save(user);
     }

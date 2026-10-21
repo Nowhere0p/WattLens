@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS `device` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(255) NOT NULL,
+    `type` VARCHAR(50) NOT NULL,
+    `location` VARCHAR(255) NOT NULL,
+    `user_id` BIGINT NOT NULL
+);
