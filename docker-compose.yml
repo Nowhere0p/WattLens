@@ -4,7 +4,7 @@ services:
     container_name: mysql
     restart: always
     environment:
-      MYSQL_DATABASE: home_energy_tracker
+      MYSQL_DATABASE: home_energy_tracker_user
       MYSQL_PASSWORD: root
       MYSQL_ROOT_PASSWORD: root
     ports:
@@ -12,7 +12,11 @@ services:
     volumes:
       - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
       - db-data:/var/lib/mysql
-      - db-data:/var/log/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
   kafka:
     image: apache/kafka:latest
     container_name: kafka
@@ -25,8 +29,8 @@ services:
       ############################################
       # Unique ID for this Kafka node
       KAFKA_NODE_ID: 1
-      # Unique Kafka cluster identifier (required for KRaft mode)
-      KAFKA_CLUSTER_ID: 'energy-tracker-cluster-1'
+      # Unique Kafka cluster identifier (required for KRaft mode, must be a base64-encoded UUID)
+      KAFKA_CLUSTER_ID: 'jcuJe-4H8kWj-zJsk2HYKw'
       # Node roles — this instance will act as BOTH a broker and controller
       KAFKA_PROCESS_ROLES: 'broker,controller'
 
@@ -81,8 +85,8 @@ services:
       # Default number of partitions per topic
       KAFKA_NUM_PARTITIONS: 1
 
-    volumes:
-      - ./docker/kafka_data:/var/lib/kafka/data
+    # Kafka topics are auto-created and disposable in local dev; no volume needed.
+    # (Data lives in the container and is recreated on "docker compose up -d".)
 
   kafka-ui:
     container_name: kafka-ui
@@ -100,4 +104,3 @@ services:
 
 volumes:
   db-data:
-  kafka-data:

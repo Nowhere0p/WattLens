@@ -5,6 +5,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -17,6 +19,26 @@ public class RestExceptionHandler {
     @ExceptionHandler(DeviceNotFoundException.class)
     public ResponseEntity<ErrorDto> handleDeviceNotFound(DeviceNotFoundException ex) {
         return new ResponseEntity<>(new ErrorDto(HttpStatus.NOT_FOUND.value(), ex.getMessage(), LocalDateTime.now()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorDto> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        String errorMessage = ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .findFirst()
+                .orElse("Validation error");
+        return new ResponseEntity<>(
+                new ErrorDto(HttpStatus.BAD_REQUEST.value(), errorMessage, LocalDateTime.now()),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorDto> handleUnreadableJson(HttpMessageNotReadableException ex) {
+        return new ResponseEntity<>(
+                new ErrorDto(HttpStatus.BAD_REQUEST.value(), "malformed or invalid JSON request body", LocalDateTime.now()),
+                HttpStatus.BAD_REQUEST
+        );
     }
 
     @ExceptionHandler(

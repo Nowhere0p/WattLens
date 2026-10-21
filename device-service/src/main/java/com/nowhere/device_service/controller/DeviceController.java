@@ -2,6 +2,7 @@ package com.nowhere.device_service.controller;
 
 import com.nowhere.device_service.dto.DeviceDto;
 import com.nowhere.device_service.service.DeviceService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,14 +24,14 @@ public class DeviceController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<DeviceDto> createDevice(@RequestBody DeviceDto deviceDto) {
+    public ResponseEntity<DeviceDto> createDevice(@Valid @RequestBody DeviceDto deviceDto) {
         DeviceDto createdDevice = deviceService.createDevice(deviceDto);
         return ResponseEntity.ok(createdDevice);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<DeviceDto> updateDevice(
-            @PathVariable Long id, @RequestBody DeviceDto deviceDto) {
+            @PathVariable Long id, @Valid @RequestBody DeviceDto deviceDto) {
         DeviceDto updatedDevice = deviceService.updateDevice(id, deviceDto);
         return ResponseEntity.ok(updatedDevice);
     }
